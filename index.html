@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Comeback Form</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- html2canvas CDN for converting HTML to image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* Custom styles for the form layout */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for the loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+            font-size: 1.5rem;
+            flex-direction: column;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 p-4 sm:p-8 flex items-center justify-center min-h-screen">
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <svg class="animate-spin h-10 w-10 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Generating PNG...</span>
+    </div>
+
+    <!-- Main form container -->
+    <div id="formContainer" class="bg-gray-800 p-6 sm:p-10 rounded-xl shadow-lg w-full max-w-4xl mx-auto">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-white text-center mb-6">
+            Vehicle Comeback Form
+        </h1>
+
+        <!-- Form elements -->
+        <form id="comebackForm" class="space-y-6">
+
+            <!-- Customer and Vehicle Information Section -->
+            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600">
+                <h2 class="text-xl font-bold mb-4 text-white">Customer & Vehicle Details</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="roNumber" class="block text-sm font-medium text-gray-300 mb-1">RO Number</label>
+                        <input type="text" id="roNumber" name="roNumber"
+                               class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                    </div>
+                    <div>
+                        <label for="customerLastName" class="block text-sm font-medium text-gray-300 mb-1">Customer Last Name</label>
+                        <input type="text" id="customerLastName" name="customerLastName"
+                               class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="vehicleInfo" class="block text-sm font-medium text-gray-300 mb-1">Vehicle (Year, Make, Model)</label>
+                        <input type="text" id="vehicleInfo" name="vehicleInfo"
+                               class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comeback Details Section -->
+            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600">
+                <h2 class="text-xl font-bold mb-4 text-white">Comeback Details</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="reasonForComeback" class="block text-sm font-medium text-gray-300 mb-1">Reason for Comeback</label>
+                        <textarea id="reasonForComeback" name="reasonForComeback" rows="4"
+                                  class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"></textarea>
+                    </div>
+
+                    <!-- Checkboxes for Comeback Type -->
+                    <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-6">
+                        <div class="flex items-center">
+                            <input id="techComeback" name="comebackType" type="checkbox"
+                                   class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                            <label for="techComeback" class="ml-2 block text-sm text-gray-300">Technician Comeback</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="partFailure" name="comebackType" type="checkbox"
+                                   class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                            <label for="partFailure" class="ml-2 block text-sm text-gray-300">Part Failure</label>
+                        </div>
+                    </div>
+
+                    <!-- Technician Selection Checkboxes (Hidden by default) -->
+                    <div id="techSelection" class="hidden mt-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Select Technician:</label>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="flex items-center">
+                                <input id="techMiguel" name="technician" type="checkbox"
+                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="techMiguel" class="ml-2 block text-sm text-gray-300">Miguel</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="techMoses" name="technician" type="checkbox"
+                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="techMoses" class="ml-2 block text-sm text-gray-300">Moses</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="techNacho" name="technician" type="checkbox"
+                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="techNacho" class="ml-2 block text-sm text-gray-300">Nacho</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="techScott" name="technician" type="checkbox"
+                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="techScott" class="ml-2 block text-sm text-gray-300">Scott</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="techJohn" name="technician" type="checkbox"
+                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="techJohn" class="ml-2 block text-sm text-gray-300">John</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Part Vendor Selection Checkboxes (Hidden by default) -->
+                    <div id="vendorSelection" class="hidden mt-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Select Part Vendor:</label>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="flex items-center">
+                                <input id="vendorMPD" name="partVendorSelection" type="checkbox"
+                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendorMPD" class="ml-2 block text-sm text-gray-300">MPD</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="vendorWorldpac" name="partVendorSelection" type="checkbox"
+                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendorWorldpac" class="ml-2 block text-sm text-gray-300">Worldpac</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="vendorOriellys" name="partVendorSelection" type="checkbox"
+                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendorOriellys" class="ml-2 block text-sm text-gray-300">O'Riellys</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="vendorAutozone" name="partVendorSelection" type="checkbox"
+                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendorAutozone" class="ml-2 block text-sm text-gray-300">Autozone</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="vendorNapa" name="partVendorSelection" type="checkbox"
+                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendorNapa" class="ml-2 block text-sm text-gray-300">Napa</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="vendor800radiator" name="partVendorSelection" type="checkbox"
+                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendor800radiator" class="ml-2 block text-sm text-gray-300">800radiator</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="vendorDealership" name="partVendorSelection" type="checkbox"
+                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendorDealership" class="ml-2 block text-sm text-gray-300">Dealership</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Dealership Name Input (Hidden by default) -->
+                        <div id="dealershipNameInputDiv" class="hidden mt-4">
+                            <label for="dealershipName" class="block text-sm font-medium text-gray-300 mb-1">Dealership Name</label>
+                            <input type="text" id="dealershipName" name="dealershipName"
+                                class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="comebackCost" class="block text-sm font-medium text-gray-300 mb-1">Cost of Comeback</label>
+                            <input type="text" id="comebackCost" name="comebackCost"
+                                   class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Totals Display Section -->
+            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600">
+                <h2 class="text-xl font-bold mb-4 text-white">Comeback Totals</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm font-medium text-gray-300">Today's Comebacks:</p>
+                        <p id="dailyComebackCount" class="text-lg font-bold text-white">0</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-300">Today's Total Cost:</p>
+                        <p id="dailyTotalCost" class="text-lg font-bold text-white">$0.00</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-300">Week Total Comebacks:</p>
+                        <p id="weeklyComebackCount" class="text-lg font-bold text-white">0</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-300">Week Total Cost:</p>
+                        <p id="weeklyTotalCost" class="text-lg font-bold text-white">$0.00</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-300">Month Total Comebacks:</p>
+                        <p id="monthlyComebackCount" class="text-lg font-bold text-white">0</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-300">Month Total Cost:</p>
+                        <p id="monthlyTotalCost" class="text-lg font-bold text-white">$0.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end">
+                <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-300 transform hover:scale-105">
+                    Save as PNG
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('comebackForm');
+            const formContainer = document.getElementById('formContainer');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            const techComebackCheckbox = document.getElementById('techComeback');
+            const techSelectionDiv = document.getElementById('techSelection');
+
+            const partFailureCheckbox = document.getElementById('partFailure');
+            const vendorSelectionDiv = document.getElementById('vendorSelection');
+            const vendorDealershipCheckbox = document.getElementById('vendorDealership');
+            const dealershipNameInputDiv = document.getElementById('dealershipNameInputDiv');
+
+            // Elements for displaying totals
+            const dailyComebackCountElem = document.getElementById('dailyComebackCount');
+            const dailyTotalCostElem = document.getElementById('dailyTotalCost');
+            const weeklyComebackCountElem = document.getElementById('weeklyComebackCount');
+            const weeklyTotalCostElem = document.getElementById('weeklyTotalCost');
+            const monthlyComebackCountElem = document.getElementById('monthlyComebackCount');
+            const monthlyTotalCostElem = document.getElementById('monthlyTotalCost');
+
+
+            const LOCAL_STORAGE_KEY = 'comebackData';
+
+            // --- Utility Functions ---
+
+            // Get today's date in YYYY-MM-DD format
+            function getTodayDateString() {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            // Load comeback data from local storage
+            function loadComebackData() {
+                const data = localStorage.getItem(LOCAL_STORAGE_KEY);
+                return data ? JSON.parse(data) : {};
+            }
+
+            // Save comeback data to local storage
+            function saveComebackData(data) {
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+            }
+
+            // Update local storage with new comeback entry
+            function updateLocalStorage(cost) {
+                const todayDate = getTodayDateString();
+                const allData = loadComebackData();
+
+                if (!allData[todayDate]) {
+                    allData[todayDate] = { totalCost: 0, comebackCount: 0 };
+                }
+
+                allData[todayDate].totalCost += cost;
+                allData[todayDate].comebackCount += 1;
+
+                saveComebackData(allData);
+            }
+
+            // Calculate and display all totals
+            function updateTotalsDisplay() {
+                const allData = loadComebackData();
+                const todayDate = getTodayDateString();
+                const currentYearMonth = todayDate.substring(0, 7); // YYYY-MM
+
+                // Calculate daily totals
+                const dailyData = allData[todayDate] || { totalCost: 0, comebackCount: 0 };
+                dailyComebackCountElem.textContent = dailyData.comebackCount;
+                dailyTotalCostElem.textContent = `$${dailyData.totalCost.toFixed(2)}`;
+
+                // Calculate weekly totals (last 7 days including today)
+                let weeklyCost = 0;
+                let weeklyCount = 0;
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // Go back 6 days to include today
+
+                for (let i = 0; i < 7; i++) {
+                    const currentDate = new Date(sevenDaysAgo);
+                    currentDate.setDate(sevenDaysAgo.getDate() + i);
+                    const dateString = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+                    
+                    if (allData[dateString]) {
+                        weeklyCost += allData[dateString].totalCost;
+                        weeklyCount += allData[dateString].comebackCount;
+                    }
+                }
+                weeklyComebackCountElem.textContent = weeklyCount;
+                weeklyTotalCostElem.textContent = `$${weeklyCost.toFixed(2)}`;
+
+                // Calculate monthly totals
+                let monthlyCost = 0;
+                let monthlyCount = 0;
+                for (const date in allData) {
+                    if (date.startsWith(currentYearMonth)) {
+                        monthlyCost += allData[date].totalCost;
+                        monthlyCount += allData[date].comebackCount;
+                    }
+                }
+                monthlyComebackCountElem.textContent = monthlyCount;
+                monthlyTotalCostElem.textContent = `$${monthlyCost.toFixed(2)}`;
+            }
+
+            // --- Event Listeners ---
+
+            // Event listener to show/hide technician selection
+            techComebackCheckbox.addEventListener('change', (event) => {
+                if (event.target.checked) {
+                    techSelectionDiv.classList.remove('hidden');
+                } else {
+                    techSelectionDiv.classList.add('hidden');
+                    // Uncheck all technician checkboxes when hidden
+                    techSelectionDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                }
+            });
+
+            // Event listener to show/hide part vendor selection
+            partFailureCheckbox.addEventListener('change', (event) => {
+                if (event.target.checked) {
+                    vendorSelectionDiv.classList.remove('hidden');
+                } else {
+                    vendorSelectionDiv.classList.add('hidden');
+                    // Uncheck all vendor checkboxes when hidden
+                    vendorSelectionDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                    // Also hide the dealership name input field
+                    dealershipNameInputDiv.classList.add('hidden');
+                    document.getElementById('dealershipName').value = ''; // Clear value
+                }
+            });
+
+            // Event listener to show/hide the dealership name input field
+            vendorDealershipCheckbox.addEventListener('change', (event) => {
+                if (event.target.checked) {
+                    dealershipNameInputDiv.classList.remove('hidden');
+                } else {
+                    dealershipNameInputDiv.classList.add('hidden');
+                    // Clear the input value when hidden
+                    document.getElementById('dealershipName').value = '';
+                }
+            });
+
+            // Form submission handler
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault(); // Prevent default form submission
+
+                // Show loading overlay
+                loadingOverlay.classList.remove('hidden');
+
+                const customerLastName = document.getElementById('customerLastName').value.trim();
+                const reasonForComeback = document.getElementById('reasonForComeback').value.trim();
+                const comebackCostInput = document.getElementById('comebackCost').value.trim();
+                const comebackCost = parseFloat(comebackCostInput) || 0; // Parse as float, default to 0 if invalid
+
+                // Update local storage with the new comeback data
+                updateLocalStorage(comebackCost);
+                // Update the displayed totals immediately
+                updateTotalsDisplay();
+
+                // Get current date in YYYY-MM-DD format for filename
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                const dateString = `${year}-${month}-${day}`;
+
+                // Sanitize and shorten reason for comeback for filename
+                const sanitizedReason = reasonForComeback.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
+                const fileName = `${dateString}_${customerLastName}_${sanitizedReason}.png`;
+
+                try {
+                    // Use html2canvas to capture the formContainer element
+                    const canvas = await html2canvas(formContainer, {
+                        scale: 2, // Increase scale for better resolution
+                        useCORS: true, // Enable cross-origin images if any (though none here)
+                        backgroundColor: null // Keep background transparent if body background is not desired
+                    });
+
+                    // Create a temporary link element to download the image
+                    const link = document.createElement('a');
+                    link.download = fileName;
+                    link.href = canvas.toDataURL('image/png');
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+                    // Optionally clear the form after successful submission and PNG generation
+                    form.reset();
+                    // Manually hide dynamic sections if they were open
+                    techSelectionDiv.classList.add('hidden');
+                    vendorSelectionDiv.classList.add('hidden');
+                    dealershipNameInputDiv.classList.add('hidden');
+
+                } catch (error) {
+                    console.error('Error generating PNG:', error);
+                    // Using alert for simplicity, but a custom modal is preferred for better UX
+                    alert('Failed to generate PNG. Please try again.');
+                } finally {
+                    // Hide loading overlay
+                    loadingOverlay.classList.add('hidden');
+                }
+            });
+
+            // Initial display update when the page loads
+            updateTotalsDisplay();
+        });
+    </script>
+
+</body>
+</html>

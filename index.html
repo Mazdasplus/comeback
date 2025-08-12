@@ -30,10 +30,13 @@
             flex-direction: column;
             gap: 1rem;
         }
-        /* Custom fix to ensure text wraps correctly in the textarea */
-        textarea {
-            word-break: break-word;
+        /* A temporary class for the text to ensure correct wrapping during PNG creation */
+        .reason-text-placeholder {
+            white-space: pre-wrap; /* This is the key to preserving line breaks and wrapping */
+            font-size: 0.875rem; /* Match the text-sm class from Tailwind */
+            line-height: 1.25rem; /* Match leading-5 from Tailwind */
             overflow-wrap: break-word;
+            word-wrap: break-word;
         }
     </style>
 </head>
@@ -57,141 +60,17 @@
         <!-- Form elements -->
         <form id="comebackForm" class="space-y-6">
 
-            <!-- Customer and Vehicle Information Section -->
-            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600">
-                <h2 class="text-xl font-bold mb-4 text-white">Customer & Vehicle Details</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="roNumber" class="block text-sm font-medium text-gray-300 mb-1">RO Number</label>
-                        <input type="text" id="roNumber" name="roNumber"
-                               class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                    </div>
-                    <div>
-                        <label for="customerLastName" class="block text-sm font-medium text-gray-300 mb-1">Customer Last Name</label>
-                        <input type="text" id="customerLastName" name="customerLastName"
-                               class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="vehicleInfo" class="block text-sm font-medium text-gray-300 mb-1">Vehicle (Year, Make, Model)</label>
-                        <input type="text" id="vehicleInfo" name="vehicleInfo"
-                               class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                    </div>
-                </div>
+            <!-- Container for dynamic vehicle sections -->
+            <div id="vehicleSectionsContainer" class="space-y-6">
+                <!-- Initial vehicle section will be added here by JS -->
             </div>
 
-            <!-- Comeback Details Section -->
-            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600">
-                <h2 class="text-xl font-bold mb-4 text-white">Comeback Details</h2>
-                <div class="space-y-4">
-                    <div>
-                        <label for="reasonForComeback" class="block text-sm font-medium text-gray-300 mb-1">Reason for Comeback</label>
-                        <textarea id="reasonForComeback" name="reasonForComeback" rows="4"
-                                  class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"></textarea>
-                    </div>
-
-                    <!-- Checkboxes for Comeback Type -->
-                    <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-6">
-                        <div class="flex items-center">
-                            <input id="techComeback" name="comebackType" type="checkbox"
-                                   class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                            <label for="techComeback" class="ml-2 block text-sm text-gray-300">Technician Comeback</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input id="partFailure" name="comebackType" type="checkbox"
-                                   class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                            <label for="partFailure" class="ml-2 block text-sm text-gray-300">Part Failure</label>
-                        </div>
-                    </div>
-
-                    <!-- Technician Selection Checkboxes (Hidden by default) -->
-                    <div id="techSelection" class="hidden mt-4">
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Select Technician:</label>
-                        <div class="flex flex-wrap gap-4">
-                            <div class="flex items-center">
-                                <input id="techMiguel" name="technician" type="checkbox"
-                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                                <label for="techMiguel" class="ml-2 block text-sm text-gray-300">Miguel</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="techMoses" name="technician" type="checkbox"
-                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                                <label for="techMoses" class="ml-2 block text-sm text-gray-300">Moses</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="techNacho" name="technician" type="checkbox"
-                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                                <label for="techNacho" class="ml-2 block text-sm text-gray-300">Nacho</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="techScott" name="technician" type="checkbox"
-                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                                <label for="techScott" class="ml-2 block text-sm text-gray-300">Scott</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="techJohn" name="technician" type="checkbox"
-                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                                <label for="techJohn" class="ml-2 block text-sm text-gray-300">John</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Part Vendor Selection Checkboxes (Hidden by default) -->
-                    <div id="vendorSelection" class="hidden mt-4">
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Select Part Vendor:</label>
-                        <div class="flex flex-wrap gap-4">
-                            <div class="flex items-center">
-                                <input id="vendorMPD" name="partVendorSelection" type="checkbox"
-                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                                <label for="vendorMPD" class="ml-2 block text-sm text-gray-300">MPD</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="vendorWorldpac" name="partVendorSelection" type="checkbox"
-                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                                <label for="vendorWorldpac" class="ml-2 block text-sm text-gray-300">Worldpac</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="vendorOriellys" name="partVendorSelection" type="checkbox"
-                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                                <label for="vendorOriellys" class="ml-2 block text-sm text-gray-300">O'Riellys</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="vendorAutozone" name="partVendorSelection" type="checkbox"
-                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                                <label for="vendorAutozone" class="ml-2 block text-sm text-gray-300">Autozone</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="vendorNapa" name="partVendorSelection" type="checkbox"
-                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                                <label for="vendorNapa" class="ml-2 block text-sm text-gray-300">Napa</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="vendor800radiator" name="partVendorSelection" type="checkbox"
-                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                                <label for="vendor800radiator" class="ml-2 block text-sm text-gray-300">800radiator</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="vendorDealership" name="partVendorSelection" type="checkbox"
-                                       class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
-                                <label for="vendorDealership" class="ml-2 block text-sm text-gray-300">Dealership</label>
-                            </div>
-                        </div>
-                        
-                        <!-- Dealership Name Input (Hidden by default) -->
-                        <div id="dealershipNameInputDiv" class="hidden mt-4">
-                            <label for="dealershipName" class="block text-sm font-medium text-gray-300 mb-1">Dealership Name</label>
-                            <input type="text" id="dealershipName" name="dealershipName"
-                                class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="comebackCost" class="block text-sm font-medium text-gray-300 mb-1">Cost of Comeback</label>
-                            <input type="text" id="comebackCost" name="comebackCost"
-                                   class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                        </div>
-                    </div>
-                </div>
+            <!-- Button to add more vehicle sections -->
+            <div class="flex justify-start">
+                <button type="button" id="addVehicleButton"
+                        class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-300 transform hover:scale-105">
+                    Add Another Vehicle
+                </button>
             </div>
 
             <!-- Totals Display Section -->
@@ -235,19 +114,161 @@
         </form>
     </div>
 
+    <!-- Template for a new vehicle section -->
+    <template id="vehicleSectionTemplate">
+        <div class="vehicle-section space-y-6">
+            <!-- Customer and Vehicle Information Section -->
+            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-white vehicle-title">Vehicle Details</h2>
+                    <button type="button" class="remove-vehicle-btn text-red-400 hover:text-red-600 focus:outline-none">
+                        Remove
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1" for="roNumber_ID_">RO Number</label>
+                        <input type="text" id="roNumber_ID_" name="roNumber_ID_"
+                            class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1" for="customerLastName_ID_">Customer Last Name</label>
+                        <input type="text" id="customerLastName_ID_" name="customerLastName_ID_"
+                            class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-300 mb-1" for="vehicleInfo_ID_">Vehicle (Year, Make, Model)</label>
+                        <input type="text" id="vehicleInfo_ID_" name="vehicleInfo_ID_"
+                            class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comeback Details for Vehicle -->
+            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600">
+                <h2 class="text-xl font-bold mb-4 text-white">Comeback Details</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1" for="reasonForComeback_ID_">Reason for Comeback</label>
+                        <textarea id="reasonForComeback_ID_" name="reasonForComeback_ID_" rows="4"
+                            class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"></textarea>
+                    </div>
+
+                    <!-- Checkboxes for Comeback Type -->
+                    <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-6">
+                        <div class="flex items-center">
+                            <input id="techComeback_ID_" name="comebackType_ID_" type="checkbox"
+                                class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                            <label for="techComeback_ID_" class="ml-2 block text-sm text-gray-300">Technician Comeback</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="partFailure_ID_" name="comebackType_ID_" type="checkbox"
+                                class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                            <label for="partFailure_ID_" class="ml-2 block text-sm text-gray-300">Part Failure</label>
+                        </div>
+                    </div>
+
+                    <!-- Technician Selection Checkboxes (Hidden by default) -->
+                    <div id="techSelection_ID_" class="hidden mt-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Select Technician:</label>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="flex items-center">
+                                <input id="techMiguel_ID_" name="technician_ID_" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="techMiguel_ID_" class="ml-2 block text-sm text-gray-300">Miguel</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="techMoses_ID_" name="technician_ID_" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="techMoses_ID_" class="ml-2 block text-sm text-gray-300">Moses</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="techNacho_ID_" name="technician_ID_" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="techNacho_ID_" class="ml-2 block text-sm text-gray-300">Nacho</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="techScott_ID_" name="technician_ID_" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="techScott_ID_" class="ml-2 block text-sm text-gray-300">Scott</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="techJohn_ID_" name="technician_ID_" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="techJohn_ID_" class="ml-2 block text-sm text-gray-300">John</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Part Vendor Selection Checkboxes (Hidden by default) -->
+                    <div id="vendorSelection_ID_" class="hidden mt-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Select Part Vendor:</label>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="flex items-center">
+                                <input id="vendorMPD_ID_" name="partVendorSelection_ID_" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendorMPD_ID_" class="ml-2 block text-sm text-gray-300">MPD</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="vendorWorldpac_ID_" name="partVendorSelection_ID_" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendorWorldpac_ID_" class="ml-2 block text-sm text-gray-300">Worldpac</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="vendorOriellys_ID_" name="partVendorSelection_ID_" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendorOriellys_ID_" class="ml-2 block text-sm text-gray-300">O'Riellys</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="vendorAutozone_ID_" name="partVendorSelection_ID_" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendorAutozone_ID_" class="ml-2 block text-sm text-gray-300">Autozone</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="vendorNapa_ID_" name="partVendorSelection_ID_" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendorNapa_ID_" class="ml-2 block text-sm text-gray-300">Napa</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="vendor800radiator_ID_" name="partVendorSelection_ID_" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendor800radiator_ID_" class="ml-2 block text-sm text-gray-300">800radiator</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="vendorDealership_ID_" name="partVendorSelection_ID_" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                <label for="vendorDealership_ID_" class="ml-2 block text-sm text-gray-300">Dealership</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Dealership Name Input (Hidden by default) -->
+                        <div id="dealershipNameInputDiv_ID_" class="hidden mt-4">
+                            <label class="block text-sm font-medium text-gray-300 mb-1" for="dealershipName_ID_">Dealership Name</label>
+                            <input type="text" id="dealershipName_ID_" name="dealershipName_ID_"
+                                class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1" for="comebackCost_ID_">Cost of Comeback</label>
+                            <input type="text" id="comebackCost_ID_" name="comebackCost_ID_"
+                                class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('comebackForm');
             const formContainer = document.getElementById('formContainer');
             const loadingOverlay = document.getElementById('loadingOverlay');
-
-            const techComebackCheckbox = document.getElementById('techComeback');
-            const techSelectionDiv = document.getElementById('techSelection');
-
-            const partFailureCheckbox = document.getElementById('partFailure');
-            const vendorSelectionDiv = document.getElementById('vendorSelection');
-            const vendorDealershipCheckbox = document.getElementById('vendorDealership');
-            const dealershipNameInputDiv = document.getElementById('dealershipNameInputDiv');
+            const vehicleSectionsContainer = document.getElementById('vehicleSectionsContainer');
+            const addVehicleButton = document.getElementById('addVehicleButton');
+            const vehicleSectionTemplate = document.getElementById('vehicleSectionTemplate');
 
             // Elements for displaying totals
             const dailyComebackCountElem = document.getElementById('dailyComebackCount');
@@ -257,8 +278,8 @@
             const monthlyComebackCountElem = document.getElementById('monthlyComebackCount');
             const monthlyTotalCostElem = document.getElementById('monthlyTotalCost');
 
-
             const LOCAL_STORAGE_KEY = 'comebackData';
+            let vehicleCount = 0;
 
             // --- Utility Functions ---
 
@@ -297,13 +318,13 @@
                 saveComebackData(allData);
             }
 
-            // Calculate and display all totals
+            // Calculate and display all totals from local storage
             function updateTotalsDisplay() {
                 const allData = loadComebackData();
                 const todayDate = getTodayDateString();
                 const currentYearMonth = todayDate.substring(0, 7); // YYYY-MM
 
-                // Calculate daily totals
+                // Calculate daily totals from persistent data
                 const dailyData = allData[todayDate] || { totalCost: 0, comebackCount: 0 };
                 dailyComebackCountElem.textContent = dailyData.comebackCount;
                 dailyTotalCostElem.textContent = `$${dailyData.totalCost.toFixed(2)}`;
@@ -320,8 +341,8 @@
                     const dateString = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
                     
                     if (allData[dateString]) {
-                        weeklyCost += allData[dateString].totalCost;
-                        weeklyCount += allData[dateString].comebackCount;
+                        weeklyCost += Number(allData[dateString].totalCost);
+                        weeklyCount += Number(allData[dateString].comebackCount);
                     }
                 }
                 weeklyComebackCountElem.textContent = weeklyCount;
@@ -332,55 +353,114 @@
                 let monthlyCount = 0;
                 for (const date in allData) {
                     if (date.startsWith(currentYearMonth)) {
-                        monthlyCost += allData[date].totalCost;
-                        monthlyCount += allData[date].comebackCount;
+                        monthlyCost += Number(allData[date].totalCost);
+                        monthlyCount += Number(allData[date].comebackCount);
                     }
                 }
                 monthlyComebackCountElem.textContent = monthlyCount;
                 monthlyTotalCostElem.textContent = `$${monthlyCost.toFixed(2)}`;
             }
 
-            // --- Event Listeners ---
+            // Function to update daily totals in real-time based on current form inputs
+            function updateCurrentFormTotals() {
+                const vehicleSections = document.querySelectorAll('.vehicle-section');
+                let currentComebacks = 0;
+                let currentCost = 0;
+                
+                vehicleSections.forEach(section => {
+                    const comebackCostInput = section.querySelector('[id^="comebackCost_"]');
+                    const reasonForComebackInput = section.querySelector('[id^="reasonForComeback_"]');
+                    const cost = parseFloat(comebackCostInput.value.trim()) || 0;
+                    
+                    if (reasonForComebackInput.value.trim() || cost > 0) {
+                        currentComebacks++;
+                        currentCost += cost;
+                    }
+                });
+                
+                // Update the daily totals display with the current form values
+                dailyComebackCountElem.textContent = currentComebacks;
+                dailyTotalCostElem.textContent = `$${currentCost.toFixed(2)}`;
+            }
 
-            // Event listener to show/hide technician selection
-            techComebackCheckbox.addEventListener('change', (event) => {
-                if (event.target.checked) {
-                    techSelectionDiv.classList.remove('hidden');
-                } else {
-                    techSelectionDiv.classList.add('hidden');
-                    // Uncheck all technician checkboxes when hidden
-                    techSelectionDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                        checkbox.checked = false;
-                    });
-                }
-            });
+            // Function to setup dynamic sections
+            function setupDynamicSection(container, id) {
+                const techComebackCheckbox = container.querySelector(`#techComeback_${id}`);
+                const techSelectionDiv = container.querySelector(`#techSelection_${id}`);
+                const partFailureCheckbox = container.querySelector(`#partFailure_${id}`);
+                const vendorSelectionDiv = container.querySelector(`#vendorSelection_${id}`);
+                const vendorDealershipCheckbox = container.querySelector(`#vendorDealership_${id}`);
+                const dealershipNameInputDiv = container.querySelector(`#dealershipNameInputDiv_${id}`);
+                const dealershipNameInput = container.querySelector(`#dealershipName_${id}`);
+                const removeButton = container.querySelector('.remove-vehicle-btn');
+                const vehicleTitle = container.querySelector('.vehicle-title');
+                const comebackCostInput = container.querySelector(`#comebackCost_${id}`);
+                const reasonForComebackInput = container.querySelector(`#reasonForComeback_${id}`);
 
-            // Event listener to show/hide part vendor selection
-            partFailureCheckbox.addEventListener('change', (event) => {
-                if (event.target.checked) {
-                    vendorSelectionDiv.classList.remove('hidden');
-                } else {
-                    vendorSelectionDiv.classList.add('hidden');
-                    // Uncheck all vendor checkboxes when hidden
-                    vendorSelectionDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                        checkbox.checked = false;
-                    });
-                    // Also hide the dealership name input field
-                    dealershipNameInputDiv.classList.add('hidden');
-                    document.getElementById('dealershipName').value = ''; // Clear value
-                }
-            });
 
-            // Event listener to show/hide the dealership name input field
-            vendorDealershipCheckbox.addEventListener('change', (event) => {
-                if (event.target.checked) {
-                    dealershipNameInputDiv.classList.remove('hidden');
-                } else {
-                    dealershipNameInputDiv.classList.add('hidden');
-                    // Clear the input value when hidden
-                    document.getElementById('dealershipName').value = '';
-                }
-            });
+                // Update vehicle title to show "Vehicle Comeback [number]"
+                vehicleTitle.textContent = `Vehicle Comeback ${id}`;
+
+                // Listener for Technician Comeback checkbox
+                techComebackCheckbox.addEventListener('change', (event) => {
+                    techSelectionDiv.classList.toggle('hidden', !event.target.checked);
+                });
+
+                // Listener for Part Failure checkbox
+                partFailureCheckbox.addEventListener('change', (event) => {
+                    vendorSelectionDiv.classList.toggle('hidden', !event.target.checked);
+                    // Clear vendor selections if unchecked
+                    if (!event.target.checked) {
+                        vendorSelectionDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+                        dealershipNameInputDiv.classList.add('hidden');
+                        dealershipNameInput.value = '';
+                    }
+                });
+
+                // Listener for Dealership checkbox
+                vendorDealershipCheckbox.addEventListener('change', (event) => {
+                    dealershipNameInputDiv.classList.toggle('hidden', !event.target.checked);
+                });
+                
+                // Listener for remove button
+                removeButton.addEventListener('click', () => {
+                    container.remove();
+                    updateCurrentFormTotals(); // Recalculate totals after removing a section
+                });
+
+                // Listener for the comeback cost input to update totals in real-time
+                comebackCostInput.addEventListener('input', updateCurrentFormTotals);
+                
+                // Also listen for changes to the reasonForComeback field to count comebacks correctly
+                reasonForComebackInput.addEventListener('input', updateCurrentFormTotals);
+            }
+
+            // Function to add a new vehicle section
+            function addVehicleSection() {
+                vehicleCount++;
+                const newSection = vehicleSectionTemplate.content.cloneNode(true);
+                
+                // Find all elements with ID_ placeholder and replace them with the new ID
+                newSection.querySelectorAll('[id*="_ID_"]').forEach(element => {
+                    element.id = element.id.replace('_ID_', `_${vehicleCount}`);
+                });
+                newSection.querySelectorAll('[name*="_ID_"]').forEach(element => {
+                    element.name = element.name.replace('_ID_', `_${vehicleCount}`);
+                });
+                newSection.querySelectorAll('[for*="_ID_"]').forEach(element => {
+                    element.htmlFor = element.htmlFor.replace('_ID_', `_${vehicleCount}`);
+                });
+
+                vehicleSectionsContainer.appendChild(newSection);
+                setupDynamicSection(vehicleSectionsContainer.lastElementChild, vehicleCount);
+                updateCurrentFormTotals(); // Update totals after adding a new section
+            }
+
+            // Add the first vehicle section on page load
+            addVehicleSection();
+
+            // Event listener for the "Add Another Vehicle" button
+            addVehicleButton.addEventListener('click', addVehicleSection);
 
             // Form submission handler
             form.addEventListener('submit', async (event) => {
@@ -389,14 +469,63 @@
                 // Show loading overlay
                 loadingOverlay.classList.remove('hidden');
 
-                const customerLastName = document.getElementById('customerLastName').value.trim();
-                const reasonForComeback = document.getElementById('reasonForComeback').value.trim();
-                const comebackCostInput = document.getElementById('comebackCost').value.trim();
-                const comebackCost = parseFloat(comebackCostInput) || 0; // Parse as float, default to 0 if invalid
+                // Get all vehicle sections
+                const vehicleSections = document.querySelectorAll('.vehicle-section');
+                let allCustomerLastNames = [];
+                let comebackCosts = [];
+                const placeholders = []; // To store references to revert changes
 
-                // Update local storage with the new comeback data
-                updateLocalStorage(comebackCost);
-                // Update the displayed totals immediately
+                // Temporarily replace textareas with divs for correct PNG rendering
+                vehicleSections.forEach(section => {
+                    const textarea = section.querySelector('[id^="reasonForComeback_"]');
+                    const comebackCostInput = section.querySelector('[id^="comebackCost_"]');
+                    const customerLastNameInput = section.querySelector('[id^="customerLastName_"]');
+
+                    const textContent = textarea.value.trim();
+                    const comebackCost = parseFloat(comebackCostInput.value.trim()) || 0;
+                    const customerLastName = customerLastNameInput.value.trim();
+                    
+                    if (customerLastName) {
+                        allCustomerLastNames.push(customerLastName);
+                    }
+
+                    if (textContent.length > 0) {
+                        // Create a temporary div to hold the text with correct wrapping
+                        const tempDiv = document.createElement('div');
+                        
+                        // Copy the relevant CSS styles and properties
+                        const textareaStyles = window.getComputedStyle(textarea);
+                        tempDiv.style.width = `${textarea.clientWidth}px`; // Match the exact width
+                        tempDiv.style.height = `${textarea.clientHeight}px`;
+                        tempDiv.style.padding = textareaStyles.padding;
+                        tempDiv.style.fontSize = textareaStyles.fontSize;
+                        tempDiv.style.lineHeight = textareaStyles.lineHeight;
+                        tempDiv.style.border = textareaStyles.border;
+                        tempDiv.style.backgroundColor = textareaStyles.backgroundColor;
+                        tempDiv.style.color = textareaStyles.color;
+                        tempDiv.style.borderRadius = textareaStyles.borderRadius;
+                        tempDiv.style.fontFamily = textareaStyles.fontFamily;
+                        tempDiv.classList.add('reason-text-placeholder');
+                        
+                        tempDiv.textContent = textContent;
+                        
+                        // Hide the original textarea and insert the temporary div
+                        textarea.style.display = 'none';
+                        textarea.parentNode.insertBefore(tempDiv, textarea);
+                        
+                        // Store a reference to revert later
+                        placeholders.push({ textarea, tempDiv });
+                    }
+                    
+                    if (textContent.length > 0 || comebackCost > 0) {
+                        comebackCosts.push(comebackCost);
+                    }
+                });
+
+                // Update local storage for each comeback cost
+                comebackCosts.forEach(cost => updateLocalStorage(cost));
+
+                // Update the displayed totals from the persistent data
                 updateTotalsDisplay();
 
                 // Get current date in YYYY-MM-DD format for filename
@@ -406,9 +535,9 @@
                 const day = String(today.getDate()).padStart(2, '0');
                 const dateString = `${year}-${month}-${day}`;
 
-                // Sanitize and shorten reason for comeback for filename
-                const sanitizedReason = reasonForComeback.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
-                const fileName = `${dateString}_${customerLastName}_${sanitizedReason}.png`;
+                // Create filename with all customer last names
+                const customerLastNamesString = allCustomerLastNames.length > 0 ? allCustomerLastNames.join('-') : 'comeback-report';
+                const fileName = `${dateString}_${customerLastNamesString}.png`;
 
                 try {
                     // Use html2canvas to capture the formContainer element
@@ -428,16 +557,31 @@
 
                     // Optionally clear the form after successful submission and PNG generation
                     form.reset();
-                    // Manually hide dynamic sections if they were open
-                    techSelectionDiv.classList.add('hidden');
-                    vendorSelectionDiv.classList.add('hidden');
-                    dealershipNameInputDiv.classList.add('hidden');
+                    // Manually remove all dynamic sections except the first one
+                    vehicleSectionsContainer.innerHTML = '';
+                    vehicleCount = 0;
+                    addVehicleSection();
 
                 } catch (error) {
                     console.error('Error generating PNG:', error);
-                    // Using alert for simplicity, but a custom modal is preferred for better UX
-                    alert('Failed to generate PNG. Please try again.');
+                    // Use a custom alert message, not the native alert()
+                    const messageBox = document.createElement('div');
+                    messageBox.className = "fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50";
+                    messageBox.innerHTML = `
+                        <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-white text-center">
+                            <p class="mb-4">Failed to generate PNG. Please try again.</p>
+                            <button onclick="this.parentNode.parentNode.remove()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">OK</button>
+                        </div>
+                    `;
+                    document.body.appendChild(messageBox);
                 } finally {
+                    // Revert the changes to the form
+                    placeholders.forEach(({ textarea, tempDiv }) => {
+                        textarea.style.display = '';
+                        if (tempDiv && tempDiv.parentNode) {
+                            tempDiv.parentNode.removeChild(tempDiv);
+                        }
+                    });
                     // Hide loading overlay
                     loadingOverlay.classList.add('hidden');
                 }
@@ -445,6 +589,7 @@
 
             // Initial display update when the page loads
             updateTotalsDisplay();
+            updateCurrentFormTotals();
         });
     </script>
 
